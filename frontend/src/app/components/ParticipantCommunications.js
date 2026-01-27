@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Header from "../components/Header"; // Assuming a Header component for sidebar
+import Header from "./header"; // Assuming a Header component for sidebar
 
 // app/participant/[id]/page.js (or a standalone component file)
 // This is a Next.js page/component recreating the provided screenshot UI.
