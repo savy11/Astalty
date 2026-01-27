@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 export default function LeftSection() {
   return (
@@ -6,14 +7,14 @@ export default function LeftSection() {
     flex items-center justify-center px-4 bg-[url('/blue-pattern.png')] bg-[#000000]">
       <div className="max-w-xl">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-8">
-          Join 1,000+ NDIS Providers who've simplified their workday with Astalty
+          Join 1,000+ NDIS Providers who&apos;ve simplified their workday with Astalty
         </h1>
 
         {/* logo strip */}
         <div className="bg-white rounded-lg flex items-center justify-between space-x-4">
-          <img src="/images/google-logo-photos-new.svg" alt="nib" className="h-40" />
-          <img src="/images/signupleft1.avif" alt="auscare" className="h-40" />
-          <img src="/images/google-logo-photos-new.svg" alt="empowered" className="h-40" />
+          <Image src="/images/google-logo-photos-new.svg" alt="nib" className="h-40" />
+          <Image src="/images/signupleft1.avif" alt="auscare" className="h-40" />
+          <Image src="/images/google-logo-photos-new.svg" alt="empowered" className="h-40" />
         </div>
 
         <p className="italic font-medium mb-10 text-center">

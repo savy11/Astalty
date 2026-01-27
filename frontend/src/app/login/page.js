@@ -44,7 +44,7 @@ export default function LoginPage() {
       isValid = false;
     } else if (!validatePassword(password)) {
       setPasswordError(
-        "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character"
+        "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character",
       );
       isValid = false;
     } else {
@@ -57,31 +57,30 @@ export default function LoginPage() {
       // router.push("/dashboard");
 
       try {
-    const response = await fetch("http://localhost:8000/api/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+        const response = await fetch("http://localhost:8000/api/user/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (response.ok) {
-      // ✅ Save token
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+        if (response.ok) {
+          // ✅ Save token
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ Redirect
-      router.push("/dashboard");
-    } else {
-      alert(data.message || "Invalid email or password");
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    alert("Something went wrong. Please try again.");
-  }
-
+          // ✅ Redirect
+          router.push("/dashboard");
+        } else {
+          alert(data.message || "Invalid email or password");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -89,8 +88,6 @@ export default function LoginPage() {
     <div className="bg-background antialiased min-h-screen flex">
       <Head>
         <title>Login - Astalty</title>
-        <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
       </Head>
 
       {/* Left Section - Promotional Content */}
@@ -174,9 +171,9 @@ export default function LoginPage() {
                 to reach more amazing users like you.
               </p>
               <p>
-                If you love what we do, we'd appreciate your feedback. Leave us
-                a Google review and we'll credit $25 to your organisation's
-                account.
+                If you love what we do, we&apos;d appreciate your feedback.
+                Leave us a Google review and we&apos;ll credit $25 to your
+                organisation&apos;s account.
               </p>
               <p>
                 To claim the credit, please click the button below, leave a

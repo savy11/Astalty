@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Header from "../components/Header"; // Assuming a Header component for sidebar
 
 // app/participant/[id]/page.js (or a standalone component file)
 // This is a Next.js page/component recreating the provided screenshot UI.
@@ -121,8 +122,8 @@ const mockCommunications = [
 
 
 export default function ParticipantCommunications({ params }) {
-  const { id } = params; // Assuming dynamic route for participant ID
-  const [communications, setCommunications] = useState(mockCommunications);
+  // const { id } = params; // Assuming dynamic route for participant ID
+  const [communications] = useState(mockCommunications);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);

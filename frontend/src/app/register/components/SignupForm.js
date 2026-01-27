@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function SignupForm() {
   const [formData, setFormData] = useState({
     businessName: "",
@@ -70,7 +72,7 @@ export default function SignupForm() {
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-6 max-w-3xl mx-auto space-y-4">
       <div className="flex justify-between items-start">
         <h2 className="text-2xl font-bold">Get started in <s>hours</s> minutes</h2>
-        <img src="/images/basics_of_health_insurance_blog.png" alt="logo" className="h-8" />
+        <Image src="/images/basics_of_health_insurance_blog.png" alt="logo" className="h-8" />
       </div>
 
       <div className="bg-blue-50 p-3 rounded flex justify-between text-sm items-center">
@@ -203,7 +205,7 @@ export default function SignupForm() {
             onChange={handleChange}
             className="w-4 h-4"
           />
-          <span>I have read and agree to Astalty's <a href="#" className="text-blue-600 underline">Terms and Conditions</a></span>
+          <span>I have read and agree to Astalty&apos;s <a href="#" className="text-blue-600 underline">Terms and Conditions</a></span>
         </label>
       </div>
 

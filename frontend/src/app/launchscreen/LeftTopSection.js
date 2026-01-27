@@ -10,7 +10,7 @@ export default function LeftSection() {
        <div className="flex items-center gap-4">
         <div className="breadcrumb">
           <button className="text-blue-500 border border-blue-400/30 rounded-full px-4 py-2 hover:bg-blue-500/10">
-            What's new
+            What&apos;s new
           </button>
         </div>
 

@@ -17,8 +17,8 @@ export default function LeftSection() {
           reach more amazing users like you.
         </p>
         <p>
-          If you love what we do, we'd appreciate your feedback. Leave us a
-          Google review and we'll credit $25 to your organisation's account.
+          If you love what we do, we&apos;d appreciate your feedback. Leave us a
+          Google review and we&apos;ll credit $25 to your organisation&apos;s account.
         </p>
         <p>
           To claim the credit, please click the button below, leave a review on

@@ -133,7 +133,7 @@ const HeroSection = () => (
               className="inline-flex space-x-6"
             >
               <span className="rounded-full bg-light-blue/10 px-3 py-1 text-sm/6 font-semibold text-light-blue ring-1 ring-inset ring-indigo-500/20">
-                What's new
+                What&apos;s new
               </span>
               <span className="inline-flex items-center space-x-2 text-sm/6 font-medium text-gray-300">
                 <span>Forms, Incidents &amp; Referrals</span>
@@ -760,12 +760,12 @@ export default function Home() {
           <div className="prose relative z-10 mr-auto max-w-prose text-lg text-gray-800">
             <p>
               Operating a business in the NDIS space can be a thrilling but
-              challenging journey. Lifegroup's got your back with the perfect
+              challenging journey. Lifegroup&apos;s got your back with the perfect
               software solution to streamline your day-to-day operations,
-              whether you're a small enterprise or a large organisation.
+              whether you&apos;re a small enterprise or a large organisation.
             </p>
             <p>
-              We're not just any software provider. Lifegroup has been designed in
+              We&apos;re not just any software provider. Lifegroup has been designed in
               collaboration with NDIS professionals, who have invested hundreds
               of hours consulting with industry experts to understand the
               problems our software needs to solve.
