@@ -114,6 +114,8 @@ const mockCommunications = [
   // Add more for pagination demo
 ];
 
+"use client";
+
 import { useState } from "react";
 import Link from "next/link";
 
