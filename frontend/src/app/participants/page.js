@@ -13,6 +13,7 @@
 import { useState } from "react";
 import { Tooltip } from 'react-tooltip';
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa"; // For sort icons; npm install react-icons
+import Link from "next/link";
 import Header from "../components/header";
 
 const sampleData = [
@@ -23,6 +24,7 @@ const sampleData = [
     phone: "+61 0458348255",
     email: "mariengelenalvarez@gmail.com",
     tags: ["Plan-managed"],
+    link: "/participants/1",
   },
   {
     id: 2,
@@ -31,6 +33,7 @@ const sampleData = [
     phone: "+61 0416091953",
     email: "paula.bian.calu@gmail.com",
     tags: ["Plan-managed"],
+    link: "/participants/1",
   },
   // Add more sample rows as needed
   {
@@ -40,6 +43,7 @@ const sampleData = [
     phone: "+61 0123456789",
     email: "john.doe@example.com",
     tags: ["Plan-managed"],
+    link: "/participants/1",
   },
 ];
 
@@ -93,14 +97,12 @@ function ParticipantsPage() {
           <h1 className="text-2xl font-bold text-purple-500">
             Participants
           </h1>
-          <button
-            onClick={() => {
-              /* Handle add participant action */
-            }}
+          <Link
+            href="/add-participant"
             className="ml-auto px-4 py-2 border border-gray-500 text-gray-500 rounded hover:bg-purple-500 hover:text-white transition ease-linear"
           >
             + Add Participant
-          </button>
+          </Link>
         </div>
         {/* Search Bar */}
         <div className="mb-6">
@@ -143,7 +145,7 @@ function ParticipantsPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedData.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
+                <tr key={item.id} className="hover:bg-gray-50" onClick={() => window.location.href = item.link}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">
                     {item.name}
                   </td>

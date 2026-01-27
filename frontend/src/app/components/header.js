@@ -86,7 +86,7 @@ function Header({
                   />
                 ) : (
                   <a
-                    href={`${item.key.toLowerCase()}`} // Dynamic href based on key; customize as needed (e.g., to router.push)
+                    href={` /${item.key.toLowerCase()}`} // Dynamic href based on key; customize as needed (e.g., to router.push)
                     className={`flex items-center space-x-2 xl:px-4 px-2 py-2 mr-1 rounded transition-all ease-linear xl:text-base text-sm ${
                       item.hasActive ? "bg-purple-500 text-white hover:bg-purple-900" : "hover:bg-[#f2f2f2]"
                     }`}
