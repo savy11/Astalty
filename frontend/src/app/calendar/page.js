@@ -55,7 +55,7 @@ function Calendar({
   };
 
   // Generate RRULE
-  const generateRRule = (recurrence, startDate) => {
+  const generateRRule = (recurrence) => {
     if (recurrence === "none") return undefined;
     return {
       freq: recurrence,

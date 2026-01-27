@@ -1,5 +1,4 @@
 // components/ParticipantDetails.js
-import React from "react";
 import Header from "./header";
 import ParticipantSidebar from "./ParticipantSidebar";
 

@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Form, Input, Select, DatePicker, Radio, Button, Space, Divider, Tooltip, Upload } from 'antd';
 import { PlusOutlined, DeleteOutlined, QuestionCircleOutlined, CalendarOutlined, UploadOutlined } from '@ant-design/icons';
 import Header from '../components/header';

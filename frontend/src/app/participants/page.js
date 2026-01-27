@@ -12,7 +12,7 @@
 
 import { useState } from "react";
 import { Tooltip } from 'react-tooltip';
-import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa"; // For sort icons; npm install react-icons
+import { FaSort } from "react-icons/fa"; // For sort icons; npm install react-icons
 import Link from "next/link";
 import Header from "../components/header";
 

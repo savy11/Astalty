@@ -1,6 +1,6 @@
 "use client";
 // components/ParticipantAppointments.js
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Header from './header';
 import ParticipantSidebar from './ParticipantSidebar';
 
