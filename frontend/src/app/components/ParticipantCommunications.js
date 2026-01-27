@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+
 // app/participant/[id]/page.js (or a standalone component file)
 // This is a Next.js page/component recreating the provided screenshot UI.
 // Assumptions:
@@ -114,10 +119,6 @@ const mockCommunications = [
   // Add more for pagination demo
 ];
 
-"use client";
-
-import { useState } from "react";
-import Link from "next/link";
 
 export default function ParticipantCommunications({ params }) {
   const { id } = params; // Assuming dynamic route for participant ID
