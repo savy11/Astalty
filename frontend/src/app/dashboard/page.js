@@ -1,68 +1,178 @@
 "use client";
+import Header from '../components/header';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  AreaChart,
+  Area,
+  ResponsiveContainer,
+} from "recharts";
 
-import { useState } from "react";
-import { FaHome, FaTasks, FaCalendarAlt, FaUsers, FaCog } from "react-icons/fa";
-import UserDropdown from "../components/userDropdown";
-import MultiDropdown from "../components/multiDropdown";
 
-const menuItems = [
+// #region Sample data
+const data = [
   {
-    label: "Tasks",
-    icon: FaTasks,
-    hasDropdown: true,
-    dropdownItems: [
-      { label: "Test 1" },
-      { label: "Test 2" },
-    ],
+    name: "Jun 25",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
   },
-  { label: "Calendar", icon: FaCalendarAlt },
-  { label: "Participants", icon: FaUsers },
   {
-    label: "Settings",
-    icon: FaCog,
-    hasDropdown: true,
-    dropdownItems: [
-      { label: "Test 3" },
-      { label: "Test 4" },
-    ],
+    name: "Jul 25",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Aug 25",
+    uv: 2000,
+    pv: 19800,
+    amt: 2290,
+  },
+  {
+    name: "Sept 25",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Oct 25",
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Nov 25",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Dec 25",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+];
+// #endregion
+
+const barChartData = [
+  {
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
   },
 ];
 
 export default function Page() {
-  const [show, setShow] = useState(false);
-
   return (
-    <div className="w-auto">
-      <div className="flex">
-        {/* Header */}
-        <div className="text-[#232323] flex justify-between items-center w-screen p-4 shadow-[2px_2px_2px_rgba(0,0,0,0.1)]">
-          <div className="font-bold text-xl">Astalty</div>
+    <div className="xl:w-auto w-full">
+      <Header activeKey="Dashboard" />
 
-          <nav className="flex">
-            {menuItems.map((item, idx) => (
-              <div key={idx}>
-                {item.hasDropdown ? (
-                  <MultiDropdown
-                    key={idx}
-                    dropdownTitle={item.label}
-                    dropdownMenuItems={item.dropdownItems}
-                  />
-                ) : (
-                  <a
-                    key={idx}
-                    href="#"
-                    className="flex items-center space-x-2 px-4 py-2 rounded hover:bg-[#f2f2f2] transition-all ease-linear"
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </a>
-                )}
-              </div>
-            ))}
-          </nav>
+      <div className="p-4 flex gap-4">
+        <div className="w-1/2 border border-gray-200 rounded-lg p-4 shadow-md">
+          <h1 className="text-2xl font-bold mb-4">Billing</h1>
 
-          <div className="flex">
-            <UserDropdown />
+          <LineChart
+            style={{
+              width: "100%",
+              maxWidth: "700px",
+              height: "100%",
+              maxHeight: "70vh",
+              aspectRatio: 1.618,
+            }}
+            responsive
+            data={data}
+            margin={{
+              top: 5,
+              right: 0,
+              left: 0,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis width="auto" />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="pv"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+            />
+            <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+          </LineChart>
+        </div>
+
+        <div className="w-1/2 border border-gray-200 rounded-lg p-4 shadow-md">
+          <h1 className="text-2xl font-bold mb-4">Revenue</h1>
+
+          <div style={{ width: "100%", height: 300 }}>
+            <ResponsiveContainer>
+              <AreaChart
+                data={data}
+                margin={{
+                  top: 10,
+                  right: 30,
+                  left: 0,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Area
+                  type="monotone"
+                  dataKey="uv"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

@@ -246,7 +246,7 @@ export default function LoginPage() {
         <div className="mx-4 w-full max-w-md">
           <div className="rounded-card border bg-white p-8 shadow-2xl">
             <Image
-              src="/assets/footer-logo.png"
+              src="/assets/logo.png"
               alt="Lifegroup Logo"
               width={150}
               height={50}

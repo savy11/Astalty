@@ -1,11 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { FaUser, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { BiUser, BiLogOut, BiCog, BiConversation, BiNotification } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const router = useRouter();
+
+  const handleLogout = () => {
+  router.push("/login"); // or "/" or "/logout"
+  };  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -23,7 +29,7 @@ export default function UserDropdown() {
         onClick={() => setOpen(!open)}
         className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:ring-2 ring-gray-300 transition"
       >
-        <FaUser className="w-5 h-5 text-gray-700" />
+        <BiUser className="w-5 h-5 text-gray-700" />
       </button>
 
       {open && (
@@ -35,12 +41,24 @@ export default function UserDropdown() {
           <ul className="py-1 text-sm text-gray-700">
             <li>
               <a href="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
-                <FaCog className="w-4 h-4" /> Settings
+                <BiNotification className="w-4 h-4" /> Notifications
               </a>
             </li>
             <li>
-              <button className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
-                <FaSignOutAlt className="w-4 h-4" /> Logout
+              <a href="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
+                <BiConversation className="w-4 h-4" /> Conversations
+              </a>
+            </li>
+            <li>
+              <a href="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
+                <BiCog className="w-4 h-4" /> Settings
+              </a>
+            </li>
+            <li>
+              <button 
+              onClick={handleLogout}
+              className="w-full text-left flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-gray-100">
+                <BiLogOut className="w-4 h-4" /> Logout
               </button>
             </li>
           </ul>

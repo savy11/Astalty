@@ -308,10 +308,10 @@ const Footer = () => (
         <div className="space-y-8">
           <Image
             alt="Company name"
-            className="h-9"
-            src="/assets/footer-logo.png"
+            className=""
+            src="/assets/logo.png"
             width={150}
-            height={36}
+            height={50}
           />
         </div>
         <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">

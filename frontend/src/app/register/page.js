@@ -634,7 +634,7 @@ export default function SignUpPage() {
                       </h2>
                     </div>
                     <Image
-                      src="/assets/footer-logo.png"
+                      src="/assets/logo.png"
                       alt="Lifegroup Logo"
                       width={150}
                       height={50}

@@ -9,13 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "@fullcalendar/core": "^6.1.20",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/list": "^6.1.20",
+    "@fullcalendar/react": "^6.1.20",
+    "@fullcalendar/rrule": "^6.1.20",
+    "@fullcalendar/timegrid": "^6.1.20",
     "@headlessui/react": "^2.2.8",
     "@heroicons/react": "^2.2.0",
+    "antd": "^6.1.4",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.9.3"
+    "react-router-dom": "^7.9.3",
+    "react-tooltip": "^5.30.0",
+    "recharts": "^3.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
