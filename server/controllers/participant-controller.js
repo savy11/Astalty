@@ -6,6 +6,32 @@ const create = async (req, res) => {
 
     const body = req.body;
 
+    // ✅ Extract fields FIRST
+    const email = body.email?.toLowerCase();
+    const phoneNumber = body.phoneNumber;
+
+    // ✅ Check if email already exists
+    const emailExists = await CreateParticipantModel.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({
+        statusCode: 1002,
+        message: "Email already exists",
+        data: {}
+      });
+    }
+
+    // ✅ Check if phone number already exists
+    const phoneExists = await CreateParticipantModel.findOne({ phoneNumber });
+    if (phoneExists) {
+      return res.status(400).json({
+        statusCode: 1002,
+        message: "Phone number already exists",
+        data: {}
+      });
+    }
+
+  
+
     const participantData = {
       // ───────── BASIC INFO ─────────
       title: body.title,
@@ -30,6 +56,8 @@ const create = async (req, res) => {
       otherDetails: body.otherDetails,
 
       // ───────── REQUIRED FIELDS ─────────
+      email:body.email,
+      phoneNumber:body.phoneNumber,
       appointmentCommunicationPreferences:
         body.appointmentCommunicationPreferences,
 
