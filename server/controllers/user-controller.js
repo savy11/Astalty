@@ -108,7 +108,7 @@ async function handleLoginUser(req, res) {
         id:user._id
       }
     }, process.env.ACCESS_TOKEN_SECRET,{
-      expiresIn:"1m"
+      expiresIn:"59m"
     })
     return res.status(200).json({
       statusCode: 1000,

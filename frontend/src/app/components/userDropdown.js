@@ -2,10 +2,16 @@
 
 import { useState, useRef, useEffect } from "react";
 import { BiUser, BiLogOut, BiCog, BiConversation, BiNotification } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const router = useRouter();
+
+  const handleLogout = () => {
+  router.push("/login"); // or "/" or "/logout"
+  };  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,7 +55,9 @@ export default function UserDropdown() {
               </a>
             </li>
             <li>
-              <button className="w-full text-left flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-gray-100">
+              <button 
+              onClick={handleLogout}
+              className="w-full text-left flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-gray-100">
                 <BiLogOut className="w-4 h-4" /> Logout
               </button>
             </li>

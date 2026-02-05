@@ -1,5 +1,6 @@
 const userRoute = require("./routes/user-routes.js")
 const dashboardMenusRoute = require("./routes/dashboard-menus-routes.js")
+const participantRoute = require("./routes/participant-routes.js")
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -12,6 +13,7 @@ const validateToken = require("./Middleware/ValidateTokenHandler");
 
 
 const app = express();
+
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -23,6 +25,8 @@ app.use(
 
 // Handle preflight explicitly
 app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL
@@ -40,9 +44,16 @@ mongoose.connect(MONGO_URL).then(()=> {
 app.use("/api/user",userRoute)
 
 /**
+ * below is the participant add api
+ */
+app.use("/api/participant",participantRoute)
+app.use("/api/participants",participantRoute)
+
+/**
  * below is the dashboardMenusRoute api
  */
 app.use("/api",dashboardMenusRoute)
+
 
 /**
  * below is the get about us list
