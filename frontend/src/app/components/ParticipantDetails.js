@@ -7,64 +7,7 @@ const ParticipantDetails = () => {
   // const { id } = router.query; // Assuming participantId is the dynamic route param
   const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
 
-  // Optionally override default menu items with dynamic data (e.g., from API)
-  const dynamicMenuItems = [
-    {
-      label: "Details",
-      badge: null,
-      href: `/participants/${id}`,
-    },
-    {
-      label: "Appointments",
-      badge: "9",
-      href: `/participants/${id}/appointments`,
-    },
-    {
-      label: "Files",
-      badge: "18/39",
-      href: `/participants/${id}/files`,
-    },
-    {
-      label: "Progress notes",
-      badge: "8",
-      href: `/participants/${id}/progress-notes`,
-    },
-    {
-      label: "Cases",
-      badge: "1",
-      href: `/participants/${id}/cases`,
-    },
-    {
-      label: "Support activities",
-      badge: "2",
-      href: `/participants/${id}/support-activities`,
-    },
-    {
-      label: "Forms",
-      badge: "10",
-      href: `/participants/${id}/forms`,
-    },
-    {
-      label: "Invoices",
-      badge: "10",
-      href: `/participants/${id}/invoices`,
-    },
-    {
-      label: "Payments",
-      badge: "10",
-      href: `/participants/${id}/payments`,
-    },
-    {
-      label: "Statements",
-      badge: null,
-      href: `/participants/${id}/statements`,
-    },
-    {
-      label: "Letters",
-      badge: null,
-      href: `/participants/${id}/letters`,
-    },
-  ];
+  
   return (
     <div className="h-screen bg-gray-50">
       {/* Top Navigation */}
@@ -94,7 +37,7 @@ const ParticipantDetails = () => {
 
       <div className="flex overflow-hidden">
         {/* Left Sidebar */}
-        <ParticipantSidebar participantId={id} menuItems={dynamicMenuItems} />
+        <ParticipantSidebar participantId={id} defaultLabel="Details" />
 
         {/* Main Content */}
         <main className="flex-1 p-6 overflow-y-auto">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Header from "./header"; // Assuming a Header component for sidebar
+import ParticipantSidebar from "./ParticipantSidebar";
 
 // app/participant/[id]/page.js (or a standalone component file)
 // This is a Next.js page/component recreating the provided screenshot UI.
@@ -195,6 +196,8 @@ export default function ParticipantCommunications({ params }) {
     practitionerAccess: 10,
   };
 
+  const id = 1; // Participant ID from params
+
   return (
     <div className="h-screen bg-gray-50">
       {/* Sidebar */}
@@ -229,46 +232,7 @@ export default function ParticipantCommunications({ params }) {
         {/* Body */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left Panel: Participant Details */}
-          <div className="w-80 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
-            <h2 className="text-lg font-medium mb-4">Details</h2>
-            <div className="space-y-4">
-              <div className="bg-white p-4 rounded-lg shadow">
-                <span className="text-sm text-gray-500">Appointments</span>
-                <div className="text-2xl font-bold">
-                  {participant.appointments}
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <span className="text-sm text-gray-500">Communications</span>
-                <div className="text-2xl font-bold">
-                  {participant.communications}
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <span className="text-sm text-gray-500">Files</span>
-                <div className="text-2xl font-bold">{participant.files}</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <span className="text-sm text-gray-500">Progress notes</span>
-                <div className="text-2xl font-bold">
-                  {participant.progressNotes}
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <span className="text-sm text-gray-500">Cases</span>
-                <div className="text-2xl font-bold">{participant.cases}</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <span className="text-sm text-gray-500">
-                  Support activities
-                </span>
-                <div className="text-2xl font-bold">
-                  {participant.supportActivities}
-                </div>
-              </div>
-              {/* Add more stats as per screenshot */}
-            </div>
-          </div>
+          <ParticipantSidebar participantId={id} defaultLabel="Communications" />
 
           {/* Right Panel: Communications */}
           <div className="flex-1 p-6 overflow-hidden flex flex-col">
