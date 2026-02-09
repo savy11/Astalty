@@ -118,9 +118,12 @@ export default function SignUpPage() {
 
   useEffect(() => {
   const fetchServiceProviderOptions = async () => {
+
+    const baseApiUrl = process.env.BASE_API_URL
+
     try {
       const response = await fetch(
-        "http://localhost:8000/api/service-provide"
+        `${baseApiUrl}/api/service-provide`
       );
 
       const data = await response.json();
@@ -141,9 +144,12 @@ export default function SignUpPage() {
 
   useEffect(() => {
   const fetchBigTeamSizeOptions = async () => {
+
+    const baseApiUrl = process.env.BASE_API_URL
+    
     try {
       const response = await fetch(
-        "http://localhost:8000/api/size-of-team"
+        `${baseApiUrl}/api/size-of-team`
       );
 
       const data = await response.json();
@@ -165,9 +171,10 @@ export default function SignUpPage() {
 
   useEffect(() => {
   const fetchHereAboutUsOptions = async () => {
+    const baseApiUrl = process.env.BASE_API_URL
     try {
       const response = await fetch(
-        "http://localhost:8000/api/hear-about-us-list"
+        `${baseApiUrl}/api/hear-about-us-list`
       );
 
       const data = await response.json();
@@ -318,8 +325,10 @@ export default function SignUpPage() {
         termsAndConditionsStatus: formData.termsConditions,
       };
 
+      const baseApiUrl = process.env.BASE_API_URL
+
       try {
-        const response = await fetch("http://localhost:8000/api/user/create", {
+        const response = await fetch(`${baseApiUrl}/api/user/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

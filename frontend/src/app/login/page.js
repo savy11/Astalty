@@ -56,8 +56,11 @@ export default function LoginPage() {
       // // Add your login logic here
       // router.push("/dashboard");
 
+      const baseApiUrl = process.env.BASE_API_URL
+
       try {
-        const response = await fetch("http://localhost:8000/api/user/login", {
+
+        const response = await fetch(`${baseApiUrl}/api/user/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
