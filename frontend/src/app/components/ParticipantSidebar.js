@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // For active state highlighting
 
-const ParticipantSidebar = ({ participantId, menuItems = [] }) => {
+const ParticipantSidebar = ({ participantId, defaultLabel }) => {
   const router = useRouter();
   const currentPath = router.asPath;
 
@@ -10,6 +10,7 @@ const ParticipantSidebar = ({ participantId, menuItems = [] }) => {
   const defaultMenuItems = [
     { label: 'Details', badge: null, href: `/participants/${participantId}`, active: false },
     { label: 'Appointments', badge: '9', href: `/participants/${participantId}/appointments`, active: false },
+    { label: 'Communications', badge: '29', href: `/participants/${participantId}/communications`, active: false },
     { label: 'Files', badge: '18/39', href: `/participants/${participantId}/files`, active: false },
     { label: 'Progress notes', badge: '8', href: `/participants/${participantId}/progress-notes`, active: false },
     { label: 'Cases', badge: '1', href: `/participants/${participantId}/cases`, active: false },
@@ -19,15 +20,16 @@ const ParticipantSidebar = ({ participantId, menuItems = [] }) => {
     { label: 'Payments', badge: '10', href: `/participants/${participantId}/payments`, active: false },
     { label: 'Statements', badge: null, href: `/participants/${participantId}/statements`, active: false },
     { label: 'Letters', badge: null, href: `/participants/${participantId}/letters`, active: false },
+    { label: 'Practitioner Access', badge: null, href: `/participants/${participantId}/practitioner-access`, active: false },
   ];
 
-  const items = menuItems.length > 0 ? menuItems : defaultMenuItems;
+  const items = defaultMenuItems;
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 p-6 space-y-4">
       <div className="space-y-2">
         {items.map((item, index) => {
-          const isActive = currentPath === item.href;
+          const isActive = (defaultLabel === item.label || currentPath === item.href);
           return (
             <Link key={index} href={item.href}>
               <div
