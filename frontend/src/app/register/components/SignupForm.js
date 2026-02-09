@@ -44,8 +44,10 @@ export default function SignupForm() {
     termsAndConditionsStatus: formData.terms,
   };
 
+  const baseApiUrl = process.env.BASE_API_URL
+
   try {
-    const response = await fetch("http://localhost:8000/api/user/create", {
+    const response = await fetch(`${baseApiUrl}/api/user/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
