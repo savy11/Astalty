@@ -14,6 +14,8 @@ const validateToken = require("./Middleware/ValidateTokenHandler");
 
 const app = express();
 
+
+
 app.use(
   cors({
     origin: "*",
@@ -30,6 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL
+
+console.log("Mongo URL:", MONGO_URL);
 
 mongoose.connect(MONGO_URL).then(()=> {
   console.log("mongo database connected successfull")
