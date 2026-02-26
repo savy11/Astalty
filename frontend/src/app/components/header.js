@@ -73,6 +73,7 @@ function Header({
               alt={logoAlt}
               width={logoWidth}
               height={logoHeight}
+              loading="eager"
             />
           </div>
 

@@ -1,5 +1,5 @@
-import ParticipantCommunications from '../../../components/ParticipantCommunications';
+import ParticipantCommunications from "../../../components/participants/communications";
 
-export default function AppointmentsPage() {
+export default function CommunicationsPage() {
   return <ParticipantCommunications />;
 }

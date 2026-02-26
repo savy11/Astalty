@@ -1,5 +1,5 @@
-import ParticipantAppointments from '../../../components/ParticipantAppointments';
+import ParticipantAppointmentsPage from "../../../components/participants/appointments";
 
 export default function AppointmentsPage() {
-  return <ParticipantAppointments />;
+  return <ParticipantAppointmentsPage />;
 }

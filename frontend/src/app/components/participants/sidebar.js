@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // For active state highlighting
 
-const ParticipantSidebar = ({ participantId, defaultLabel }) => {
+const   ParticipantSidebar = ({ participantId, defaultLabel }) => {
   const router = useRouter();
   const currentPath = router.asPath;
 
