@@ -56,7 +56,7 @@ export default function LoginPage() {
       // // Add your login logic here
       // router.push("/dashboard");
 
-      const baseApiUrl = process.env.BASE_API_URL
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
 
       try {
 
