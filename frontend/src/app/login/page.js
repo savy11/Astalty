@@ -5,12 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,6 +62,7 @@ export default function LoginPage() {
 
       try {
 
+        setLoading(true);  
         const response = await fetch(`${baseApiUrl}/api/user/login`, {
           method: "POST",
           headers: {
@@ -83,6 +86,9 @@ export default function LoginPage() {
       } catch (error) {
         console.error("Login error:", error);
         alert("Something went wrong. Please try again.");
+      }
+      finally {
+        setLoading(false);  // ✅ Stop loading
       }
     }
   };
