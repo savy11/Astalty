@@ -32,9 +32,80 @@ const CreateParticipantForm = () => {
   const referralTypeOptions = ['Type 1', 'Type 2'];
   const relationshipOptions = ['Spouse', 'Child', 'Parent', 'Sibling'];
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log('Form values:', values);
-  };
+   try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login again");
+      return;
+    }
+
+    const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+    const payload = {
+      title: values.title,
+      firstName: values.personalDetails?.firstname,
+      middleName: values.personalDetails?.middleName,
+      lastName: values.personalDetails?.lastname,
+      preferredName: values.personalDetails?.preferredName,
+      day: values.personalDetails?.birthDay,
+      month: values.personalDetails?.birthMonth,
+      year: values.personalDetails?.birthYear,
+      sex: values.personalDetails?.sex,
+      genderIdentity: values.personalDetails?.genderIdentity,
+      pronouns: values.personalDetails?.pronouns,
+      occupation: values.personalDetails?.occupation,
+      otherDetails: values.personalDetails?.extraInfo,
+      tags: values.personalDetails?.patientTagIds || [],
+      email: values.email,
+      phoneNumber: values.phoneNumbers?.[0]?.phoneNumber,
+      appointmentCommunicationPreferences:
+        values.communicationPreference,
+      address: {
+        address1: values.addressL1,
+        address2: values.addressL2,
+        address3: values.addressL3,
+        city: values.city,
+        state: values.state,
+        postalCode: values.postalCode,
+        country: values.country,
+      },
+      privacyPolicyStatus: values.privacyPolicy === "Accepted",
+      medications: values.medications || [],
+      allergies: values.allergies || [],
+      intolerances: values.intolerances || [],
+    };
+
+    console.log("Sending payload:", payload);
+
+    const response = await fetch(
+      `${baseApiUrl}/api/participant/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload), // 🔥 IMPORTANT
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Participant created successfully 🎉");
+      form.resetFields();
+    } else {
+      alert(data.message || "Something went wrong");
+    }
+
+  } catch (error) {
+    console.error("Create participant error:", error);
+    alert("Server error");
+  }
+};
 
   return (
     <div>

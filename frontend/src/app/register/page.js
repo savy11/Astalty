@@ -116,10 +116,14 @@ export default function SignUpPage() {
   // HowBigYourTeam add from here
   const[serviceProviderOptions,setServiceProviderOptions] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
   const fetchServiceProviderOptions = async () => {
 
-    const baseApiUrl = process.env.BASE_API_URL
+    const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
+
+    console.log("sign up inner apis"+baseApiUrl)
 
     try {
       const response = await fetch(
@@ -145,7 +149,7 @@ export default function SignUpPage() {
   useEffect(() => {
   const fetchBigTeamSizeOptions = async () => {
 
-    const baseApiUrl = process.env.BASE_API_URL
+    const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
     
     try {
       const response = await fetch(
@@ -171,7 +175,7 @@ export default function SignUpPage() {
 
   useEffect(() => {
   const fetchHereAboutUsOptions = async () => {
-    const baseApiUrl = process.env.BASE_API_URL
+    const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
     try {
       const response = await fetch(
         `${baseApiUrl}/api/hear-about-us-list`
@@ -300,13 +304,17 @@ export default function SignUpPage() {
     setErrors(newErrors);
 
     if (isValid) {
+
       console.log("Form submitted:", {
         ...formData,
         referralSource: formData.referralSource?.value,
         teamSize: formData.teamSize?.value,
       });
 
-
+      if (!navigator.onLine) {
+          alert("No internet connection. Please check your network.");
+          return;
+      }
 
       // Add your form submission logic here (e.g., API call)
       const payload = {
@@ -316,18 +324,18 @@ export default function SignUpPage() {
         mobileNumber: formData.mobile,
         email: formData.email,
         password: formData.password,
-
         hereAboutUs: formData.referralSource?.value,
         sizeOfTeam: formData.teamSize?.value,
         serviceProvide: formData.services.map(s => s.value),
-
         privacyPolicyStatus: formData.privacyPolicy,
         termsAndConditionsStatus: formData.termsConditions,
       };
 
-      const baseApiUrl = process.env.BASE_API_URL
+      // const baseApiUrl = process.env.BASE_API_URL
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
 
       try {
+        setLoading(true); 
         const response = await fetch(`${baseApiUrl}/api/user/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -349,6 +357,8 @@ export default function SignUpPage() {
       } catch (error) {
         console.error("Network error:", error);
         alert("Network error, please try again later");
+      }finally {
+         setLoading(false);  // 👈 STOP LOADER
       }
 
     }
@@ -1094,6 +1104,7 @@ export default function SignUpPage() {
                     <div className="mt-4 flex w-full lg:mt-8">
                       <button
                         type="submit"
+                        disabled={loading}
                         className="inline-flex items-center cursor-pointer relative justify-center text-sm font-medium ring-offset-background transition-colors duration-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-navy text-primary-foreground hover:bg-navy/90 shadow-xs active:bg-navy/80 h-9 px-4 rounded-md w-full"
                       >
                         <span className="inline-flex items-center justify-center whitespace-nowrap select-none text-white">

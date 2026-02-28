@@ -10,63 +10,134 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tooltip } from 'react-tooltip';
 import { FaSort } from "react-icons/fa"; // For sort icons; npm install react-icons
 import Link from "next/link";
 import Header from "../components/header";
 
-const sampleData = [
-  {
-    id: 1,
-    name: "Malakai (Malakai Sajul)",
-    dob: "24 Sep 2022",
-    phone: "+61 0458348255",
-    email: "mariengelenalvarez@gmail.com",
-    tags: ["Plan-managed"],
-    link: "/participants/1",
-  },
-  {
-    id: 2,
-    name: "Paige (Paige) Lu",
-    dob: "29 Dec 2021",
-    phone: "+61 0416091953",
-    email: "paula.bian.calu@gmail.com",
-    tags: ["Plan-managed"],
-    link: "/participants/1",
-  },
-  // Add more sample rows as needed
-  {
-    id: 3,
-    name: "John Doe (John Doe)",
-    dob: "15 Jan 2023",
-    phone: "+61 0123456789",
-    email: "john.doe@example.com",
-    tags: ["Plan-managed"],
-    link: "/participants/1",
-  },
-];
+// const sampleData = [
+//   {
+//     id: 1,
+//     name: "Malakai (Malakai Sajul)",
+//     dob: "24 Sep 2022",
+//     phone: "+61 0458348255",
+//     email: "mariengelenalvarez@gmail.com",
+//     tags: ["Plan-managed"],
+//     link: "/participants/1",
+//   },
+//   {
+//     id: 2,
+//     name: "Paige (Paige) Lu",
+//     dob: "29 Dec 2021",
+//     phone: "+61 0416091953",
+//     email: "paula.bian.calu@gmail.com",
+//     tags: ["Plan-managed"],
+//     link: "/participants/1",
+//   },
+//   // Add more sample rows as needed
+//   {
+//     id: 3,
+//     name: "John Doe (John Doe)",
+//     dob: "15 Jan 2023",
+//     phone: "+61 0123456789",
+//     email: "john.doe@example.com",
+//     tags: ["Plan-managed"],
+//     link: "/participants/1",
+//   },
+// ];
 
 function ParticipantsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDir, setSortDir] = useState("asc"); // 'asc', 'desc', null
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [participants, setParticipants] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Filter data by search
-  const filteredData = sampleData.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // 🔥 Fetch real participants
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
 
-  // Sort data by name
+        const token = localStorage.getItem("token");
+        console.log("API token:", token);
+
+        if (!token) {
+          console.log("No token found");
+          return;
+        }
+
+        const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+        const response = await fetch(
+        `${baseApiUrl}/api/participants/fetch`,
+          {
+        headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+        );
+
+        const data = await response.json();
+
+        console.log("API response:", data);
+
+        // Handle both response formats
+        setParticipants(data.data || data);
+      } catch (error) {
+        console.error("Failed to fetch participants", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchParticipants();
+  }, []);
+
+   // 🔎 Search
+  // const filteredData = participants.filter((item) =>
+  //   `${item.firstName} ${item.lastName}`
+  //     .toLowerCase()
+  //     .includes(searchTerm.toLowerCase()) ||
+  //   item.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   item.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+
+  const filteredData = Array.isArray(participants)
+  ? participants.filter((item) =>
+      `${item.firstName || ""} ${item.lastName || ""}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      item.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  : [];
+
+  // // Filter data by search
+  // const filteredData = sampleData.filter(
+  //   (item) =>
+  //     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     item.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     item.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+
+  // 🔄 Sort by name
   const sortedData = [...filteredData].sort((a, b) => {
-    if (sortDir === "asc") return a.name.localeCompare(b.name);
-    if (sortDir === "desc") return b.name.localeCompare(a.name);
+    const nameA = `${a.firstName} ${a.lastName}`;
+    const nameB = `${b.firstName} ${b.lastName}`;
+
+    if (sortDir === "asc") return nameA.localeCompare(nameB);
+    if (sortDir === "desc") return nameB.localeCompare(nameA);
     return 0;
   });
+
+  // // Sort data by name
+  // const sortedData = [...filteredData].sort((a, b) => {
+  //   if (sortDir === "asc") return a.name.localeCompare(b.name);
+  //   if (sortDir === "desc") return b.name.localeCompare(a.name);
+  //   return 0;
+  // });
 
   // Pagination
   const totalItems = sortedData.length;
@@ -115,99 +186,120 @@ function ParticipantsPage() {
           />
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-bold text-gray-500 tracking-wider" data-tooltip-id="sort-tooltip" data-tooltip-content={getSortTooltip()} onClick={handleSort}>
-                  <Tooltip id="sort-tooltip" />
-                  <button className="flex items-center space-x-1 hover:text-gray-700">
-                    <span>Name</span>
-                    {sortDir === null && <FaSort className="w-3 h-3" />}
-                    {sortDir === "asc" && <FaSort className="w-3 h-3" />}
-                    {sortDir === "desc" && <FaSort className="w-3 h-3" />}
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-bold text-gray-500 tracking-wider">
-                  Date of Birth
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-bold text-gray-500 tracking-wider">
-                  Phone
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-bold text-gray-500 tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-bold text-gray-500 tracking-wider">
-                  Tags
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {paginatedData.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50" onClick={() => window.location.href = item.link}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50">
-                    {item.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.dob}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-500">
-                    {item.phone}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex space-x-1">
-                      {item.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        
+        {/* Loading */}
+        {loading ? (
+          <div className="text-center py-10 text-gray-500">
+            Loading participants...
+          </div>
+        ) : (
+          <>
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      className="px-6 py-3 text-left text-sm font-bold text-gray-500 cursor-pointer"
+                      onClick={handleSort}
+                    >
+                      Name {sortDir === "asc" ? "▲" : "▼"}
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-gray-500">
+                      Date of Birth
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-gray-500">
+                      Phone
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-gray-500">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-gray-500">
+                      Tags
+                    </th>
+                  </tr>
+                </thead>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-between items-center mt-6">
-            <div className="text-sm text-gray-700">
-              {totalItems > 0
-                ? `${startIndex + 1}-${Math.min(
+                <tbody className="divide-y divide-gray-200">
+                  {paginatedData.map((item) => (
+                    <tr
+                      key={item._id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                    >
+                      <td className="px-6 py-4 bg-gray-50 font-medium">
+                        {item.firstName} {item.lastName}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {item.day}/{item.month}/{item.year}
+                      </td>
+
+                      <td className="px-6 py-4 text-purple-500">
+                        {item.phoneNumber}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {item.email}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          {item.tags?.map((tag, index) => (
+                            <span
+                              key={index}
+                              className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-between items-center mt-6">
+                <div className="text-sm text-gray-600">
+                  {startIndex + 1}-
+                  {Math.min(
                     startIndex + itemsPerPage,
                     totalItems
-                  )} of ${totalItems} items`
-                : "0 of 0 items"}
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-              >
-                Previous
-              </button>
-              <span className="px-3 py-2 text-sm font-medium">
-                {currentPage}
-              </span>
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-              >
-                Next
-              </button>
-            </div>
-            <div className="text-sm text-gray-700">{itemsPerPage}/page</div>
-          </div>
+                  )}{" "}
+                  of {totalItems}
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      handlePageChange(currentPage - 1)
+                    }
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+
+                  <span className="px-3 py-1">
+                    {currentPage}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      handlePageChange(currentPage + 1)
+                    }
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

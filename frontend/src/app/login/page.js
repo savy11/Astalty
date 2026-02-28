@@ -58,9 +58,18 @@ export default function LoginPage() {
       // // Add your login logic here
       // router.push("/dashboard");
 
+      if (!navigator.onLine) {
+          alert("No internet connection. Please check your network.");
+          return;
+      }
+
       const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
 
+      console.log("API URL:", process.env.NEXT_PUBLIC_BASE_API_URL)
+
       try {
+
+        
 
         setLoading(true);  
         const response = await fetch(`${baseApiUrl}/api/user/login`, {
@@ -75,8 +84,10 @@ export default function LoginPage() {
 
         if (response.ok) {
           // ✅ Save token
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
+
+          console.log("step3", data.data.accessToken);
+          localStorage.setItem("token", data.data.accessToken);
+          // localStorage.setItem("user", JSON.stringify(data.data.user));
 
           // ✅ Redirect
           router.push("/dashboard");
@@ -86,7 +97,7 @@ export default function LoginPage() {
       } catch (error) {
         console.error("Login error:", error);
         alert("Something went wrong. Please try again.");
-      }
+      } 
       finally {
         setLoading(false);  // ✅ Stop loading
       }
@@ -348,10 +359,12 @@ export default function LoginPage() {
               </div>
               <button
                 type="submit"
+                disabled={loading}
                 className="inline-flex items-center cursor-pointer relative justify-center text-sm font-medium ring-offset-background transition-colors duration-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-navy text-primary-foreground hover:bg-navy/90 shadow-xs active:bg-navy/80 h-9 px-4 rounded-md w-full"
-              >
+              > 
                 <span className="inline-flex items-center justify-center whitespace-nowrap text-white">
-                  Login
+                  
+                  {loading ? "Logging in..." : "Login"}
                 </span>
               </button>
             </form>
