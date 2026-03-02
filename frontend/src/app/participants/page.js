@@ -225,6 +225,7 @@ function ParticipantsPage() {
                     <tr
                       key={item._id}
                       className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => window.location.href = `participants/1`}
                     >
                       <td className="px-6 py-4 bg-gray-50 font-medium">
                         {item.firstName} {item.lastName}
