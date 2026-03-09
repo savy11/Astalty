@@ -9,11 +9,64 @@ import { DollarSign, Edit, Plus, ExternalLink } from "lucide-react";
 import Header from "../header";
 import ParticipantSidebar from "./sidebar";
 import ParticipantProfileHeader from "./profileHeader";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ParticipantDetailsPage() {
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+  const { id } = useParams(); // Hardcoded for demonstration; replace with dynamic param as needed
+  const [participant, setParticipant] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+
+    const fetchParticipant = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token");
+        const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+        const response = await fetch(
+          `${baseApiUrl}/api/participants/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        console.log("Participant Data:", data);
+
+        setParticipant(data.data || data);
+
+      } catch (error) {
+        console.error("Failed to fetch participant", error);
+      } finally {
+        setLoading(false);
+      }
+
+    };
+
+    if (id) fetchParticipant();
+
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="p-10 text-center text-gray-500">
+        Loading participant details...
+      </div>
+    );
+  }
+
+  const initials =
+    `${participant?.firstName?.charAt(0) || ""}${participant?.lastName?.charAt(0) || ""}`;
+
 
   return (
     <div className="h-screen bg-gray-50">
@@ -21,7 +74,7 @@ export default function ParticipantDetailsPage() {
       <Header activeKey="Participants" />
 
       <ParticipantProfileHeader
-        participantName="Paige (Paige) Lu"
+        participantName={`${participant?.firstName} (${participant?.preferredName}) ${participant?.lastName}`}
         participantId={id}
       />
 
@@ -52,10 +105,14 @@ export default function ParticipantDetailsPage() {
               <div className="p-6 space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center text-2xl font-bold">
-                    PL
+                    {initials}
                   </div>
                   <div>
-                    <h3 className="text-xl font-medium">Ms Paige (Paige) Lu</h3>
+                    <h3 className="text-xl font-medium">
+                      {participant?.title} {participant?.firstName} ({participant?.preferredName})
+                       {participant?.lastName}
+                    </h3>
+                    
                   </div>
                 </div>
 
@@ -65,12 +122,15 @@ export default function ParticipantDetailsPage() {
                       Date of birth
                     </label>
                     <p className="mt-1 font-medium">
-                      29 Dec 2021 (4 years 1 months old)
+                      {participant?.medicareClaimant?.dob
+                        ? `${participant.medicareClaimant.dob.day} 
+                        ${participant.medicareClaimant.dob.month} ${participant.medicareClaimant.dob.year}`
+                        : "-"}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm text-gray-500">Sex</label>
-                    <p className="mt-1 font-medium">Female</p>
+                    <p className="mt-1 font-medium">{participant?.sex || "-"}</p>
                   </div>
                 </div>
               </div>
@@ -88,17 +148,17 @@ export default function ParticipantDetailsPage() {
                   <div>
                     <label className="block text-sm text-gray-500">Email</label>
                     <a
-                      href="mailto:paulabiancalu@gmail.com"
+                      href={`mailto:${participant?.email}`}
                       className="mt-1 text-emerald-600 hover:underline font-medium"
                     >
-                      paulabiancalu@gmail.com
+                      {participant?.email || "-"}
                     </a>
                   </div>
                   <div>
                     <label className="block text-sm text-gray-500">
                       Phone numbers
                     </label>
-                    <p className="mt-1 font-medium">+61 0416091953 (Mobile)</p>
+                    <p className="mt-1 font-medium">{participant?.phone || "-"}</p>
                   </div>
                 </div>
 
@@ -112,9 +172,11 @@ export default function ParticipantDetailsPage() {
                 <div>
                   <label className="block text-sm text-gray-500">Address</label>
                   <p className="mt-1 font-medium whitespace-pre-line">
-                    79 Hummingbird Dr
-                    <br />
-                    Botanic Ridge VIC 3977
+                      {participant?.address?.address1}
+                      <br />
+                      {participant?.address?.cityTown}
+                      <br />
+                      {participant?.address?.stateRegion} {participant?.address?.postalZipCode}
                   </p>
                 </div>
 
@@ -122,7 +184,7 @@ export default function ParticipantDetailsPage() {
                   <label className="block text-sm text-gray-500">
                     Timezone
                   </label>
-                  <p className="mt-1 font-medium">GMT+11 - Australia/Sydney</p>
+                  <p className="mt-1 font-medium">{participant?.address?.timeZone || "-"}</p>
                 </div>
               </div>
             </section>
@@ -173,7 +235,7 @@ export default function ParticipantDetailsPage() {
                   <label className="block text-sm text-gray-500">
                     NDIS number
                   </label>
-                  <p className="mt-1 font-medium">531841270</p>
+                  <p className="mt-1 font-medium">{participant?.ndisNumber || "-"}</p>
                 </div>
                 <div>
                   <label className="block text-sm text-gray-500">
@@ -197,7 +259,7 @@ export default function ParticipantDetailsPage() {
                   <label className="block text-sm text-gray-500">
                     Plan nominee
                   </label>
-                  <p className="mt-1 font-medium">Paula Bianca Lu</p>
+                  <p className="mt-1 font-medium">{participant?.planNominee || "-"}</p>
                 </div>
                 <div>
                   <label className="block text-sm text-gray-500">

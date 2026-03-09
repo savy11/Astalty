@@ -9,6 +9,7 @@ import { Fragment } from "react";
 import Header from "../header";
 import ParticipantSidebar from "./sidebar";
 import ParticipantProfileHeader from "./profileHeader";
+import { useParams } from "next/navigation";
 
 /**
  * @typedef {Object} Appointment
@@ -124,7 +125,12 @@ export default function ParticipantAppointmentsPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+  // const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+
+  const params = useParams();
+  const id = params.id;
+
+  console.log("Participant ID:", id);
 
   return (
     <div className="h-screen bg-gray-50">
