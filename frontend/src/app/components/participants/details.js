@@ -4,6 +4,7 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DollarSign, Edit, Plus, ExternalLink } from "lucide-react";
 import Header from "../header";
@@ -18,7 +19,7 @@ export default function ParticipantDetailsPage() {
   const { id } = useParams(); // Hardcoded for demonstration; replace with dynamic param as needed
   const [participant, setParticipant] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
 
   useEffect(() => {
 
@@ -89,7 +90,9 @@ export default function ParticipantDetailsPage() {
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">Details</h1>
             </div>
-            <button className="flex items-center gap-2 border border-gray-300 hover:bg-gray-50 px-5 py-2.5 rounded-xl text-sm font-medium">
+            <button 
+            onClick={() => router.push(`/participants/${id}/edit-participant`)}
+            className="flex items-center gap-2 border border-gray-300 hover:bg-gray-50 px-5 py-2.5 rounded-xl text-sm font-medium">
               <Edit className="w-4 h-4" /> Edit
             </button>
           </div>

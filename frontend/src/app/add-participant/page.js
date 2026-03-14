@@ -1,5 +1,5 @@
 'use client';
-
+import { useState, useEffect } from "react";
 import { Form, Input, Select, DatePicker, Radio, Button, Space, Divider, Tooltip, Upload } from 'antd';
 import { PlusOutlined, DeleteOutlined, QuestionCircleOutlined, CalendarOutlined, UploadOutlined } from '@ant-design/icons';
 import Header from '../components/header';
@@ -31,6 +31,31 @@ const CreateParticipantForm = () => {
   const invoiceReminderOptions = ['On', 'Off'];
   const referralTypeOptions = ['Type 1', 'Type 2'];
   const relationshipOptions = ['Spouse', 'Child', 'Parent', 'Sibling'];
+
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+  const fetchTags = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(`${baseApiUrl}/api/tags`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      setTags(data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch tags", error);
+    }
+  };
+
+  fetchTags();
+}, []);
 
   const onFinish = async (values) => {
     console.log('Form values:', values);
@@ -194,8 +219,20 @@ const CreateParticipantForm = () => {
               <TextArea maxLength={1000} showCount />
             </Form.Item>
             <Form.Item label="Tags" name={['personalDetails', 'patientTagIds']}>
-              <Select mode="multiple" showSearch placeholder="Select Participant tag" style={{ width: '100%' }} />
-            </Form.Item>
+            <Select
+              mode="multiple"
+              showSearch
+              optionFilterProp="children"
+              placeholder="Select Participant tag"
+              style={{ width: "100%" }}
+            >
+              {tags.map((tag) => (
+                <Option key={tag._id} value={tag._id}>
+                  {tag.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
           </section>
 
           <Divider style={{ borderColor: '#8250FF' }} />
