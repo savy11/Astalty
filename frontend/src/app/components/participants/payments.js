@@ -4,7 +4,8 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   Plus,
@@ -133,7 +134,10 @@ const mockPayments = [
 ];
 
 export default function ParticipantPaymentsPage() {
-  const [payments, setPayments] = useState(mockPayments);
+
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("desc");
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -192,7 +196,57 @@ export default function ParticipantPaymentsPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+
+  const params = useParams();
+  const id = params.id;
+
+  useEffect(() => {
+  const fetchPayments = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(
+        `${baseApiUrl}/api/participants/${id}/payments`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const json = await response.json();
+
+      console.log("PAYMENTS API RESPONSE:", json);
+
+      if (json.success) {
+        const formatted = (json.data || []).map((item) => ({
+          id: item._id,
+          paymentNumber: item.paymentNumber,
+          from: item.from,
+          amount: item.amount,
+          paymentDate: new Date(item.paymentDate).toLocaleDateString(),
+          recipient: "Approach Care Pty Ltd",
+          status: "Paid",
+          details: "",
+        }));
+
+        setPayments(formatted);
+      } else {
+        setPayments([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch payments", error);
+      setPayments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchPayments();
+}, [id]);
 
   return (
     <div className="h-screen bg-gray-50">

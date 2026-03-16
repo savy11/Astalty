@@ -277,6 +277,11 @@ export default function ParticipantInvoicesPage() {
         }
       );
 
+      const urlCheck = `${baseApiUrl}/api/participants/${id}/invoices`;
+
+
+      console.log("API urlCheck", urlCheck);
+
       const json = await response.json();
 
       console.log("API RESPONSE", json); // debug

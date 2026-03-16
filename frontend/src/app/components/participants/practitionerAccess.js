@@ -1,7 +1,8 @@
 // app/patients/[id]/practitioner-access/page.tsx
 
 "use client";
-
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { MoreHorizontal } from "lucide-react";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
@@ -44,7 +45,58 @@ const mockPractitioners = [
 export default function PractitionerAccessPage() {
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+  const params = useParams();
+  const id = params.id;
+
+  const [practitioners, setPractitioners] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  const fetchPractitioners = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(
+        `${baseApiUrl}/api/participants/${id}/practitioner-access`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const json = await response.json();
+
+      console.log("PRACTITIONER API RESPONSE:", json);
+
+      if (json.success) {
+        const formatted = (json.data || []).map((item) => ({
+          id: item._id,
+          name: item.name,
+          isOwner: item.roleType === "Practitioner admin",
+          roleName: item.roleName,
+          roleType: item.roleType,
+          group: item.group,
+          status: item.status,
+        }));
+
+        setPractitioners(formatted);
+      } else {
+        setPractitioners([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch practitioners", error);
+      setPractitioners([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchPractitioners();
+}, [id]);
 
   return (
     <div className="h-screen bg-gray-50">
@@ -112,7 +164,7 @@ export default function PractitionerAccessPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y text-sm text-gray-700">
-                    {mockPractitioners.map((p) => (
+                    {(practitioners || []).map((p) => (
                       <tr
                         key={p.id}
                         className="hover:bg-gray-50 transition-colors"
@@ -194,7 +246,7 @@ export default function PractitionerAccessPage() {
 
               {/* Pagination footer */}
               <div className="px-8 py-4 border-t flex items-center justify-between text-sm text-gray-500">
-                <div>1-2 of 2 items</div>
+                <div>1-{practitioners.length} of {practitioners.length} items</div>
                 <div className="flex items-center gap-4">
                   <button disabled className="text-gray-400 cursor-not-allowed">
                     ← Previous
