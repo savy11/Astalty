@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import {
   Upload,
   Search,
@@ -14,7 +15,14 @@ import { Menu, Transition, Dialog } from "@headlessui/react";
 import { Fragment } from "react";
 import Header from "../header";
 import ParticipantSidebar from "./sidebar";
-import ParticipantProfileHeader from "./profileHeader";
+
+// import ParticipantProfileHeader from "./profileHeader";
+import dynamic from "next/dynamic";
+
+const ParticipantProfileHeader = dynamic(
+  () => import("./profileHeader"),
+  { ssr: false }
+);
 
 /**
  * @typedef {Object} FileItem
@@ -174,15 +182,18 @@ const initialFiles = [
 ];
 
 export default function ParticipantFilesPage() {
-  const [files, setFiles] = useState(initialFiles);
+
+  const [files, setFiles] = useState();
+  const [loading, setLoading] = useState(true);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [showNewFolderModal, setShowNewFolderModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
 
-  const filteredFiles = files.filter((f) =>
-    f.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredFiles = (files || []).filter((f) =>
+  f.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+);
 
   // Drag & Drop reordering
   const handleDragStart = (e, id) => {
@@ -280,7 +291,57 @@ export default function ParticipantFilesPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+
+  const { id } = useParams();
+
+  useEffect(() => {
+  fetchFiles();
+  }, []);
+
+  const fetchFiles = async () => {
+  try {
+
+    console.log("id check grv"+id);
+
+    setLoading(true);
+
+        const token = localStorage.getItem("token");
+        const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+        console.log("url"+`${baseApiUrl}/api/participants/${id}/files`);
+
+        const response = await fetch(
+          `${baseApiUrl}/api/participants/${id}/files`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+    const result = await response.json();
+
+    console.log("result"+result);
+
+    if (result.success) {
+      const formattedFiles = result.data.map((file) => ({
+        id: file._id,
+        name: file.name,
+        uploader: file.uploader,
+        uploadDate: new Date(file.uploadDate).toLocaleString(),
+        size: file.fileSize,
+        type: file.name.split(".").pop()?.toLowerCase(),
+      }));
+
+      setFiles(formattedFiles);
+    }
+  } catch (error) {
+    console.error("Error fetching files:", error);
+  }
+  finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="h-screen bg-gray-50">

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+
 import {
   Plus,
   ChevronDown,
@@ -99,7 +101,55 @@ export default function ParticipantCasesPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+
+  const params = useParams();
+  const id = params.id;
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  const fetchCases = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(
+          `${baseApiUrl}/api/participants/${id}/cases`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+      const json = await response.json();
+
+      if (json.success) {
+        const formatted = (json.data || []).map((item) => ({
+          id: item._id,
+          caseNumber: item.caseNumber,
+          issueDate: new Date(item.issueDate).toLocaleDateString(),
+          expiryDate: new Date(item.expiryDate).toLocaleDateString(),
+          assignee: item.assignee,
+          type: item.type,
+          allocated: `${item.allocatedAmount} of ${item.totalAmount}`,
+          invoiced: `${item.invoicedAmount} of ${item.totalAmount}`,
+          status: item.status,
+        }));
+
+        setCases(formatted);
+      }
+    } catch (error) {
+      console.error("Failed to fetch cases", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchCases();
+}, [id]);
 
   return (
     <div className="h-screen bg-gray-50">

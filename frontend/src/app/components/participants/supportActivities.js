@@ -4,7 +4,9 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+
 import { Plus } from "lucide-react";
 import { Dialog, Transition, Menu } from "@headlessui/react";
 import { Fragment } from "react";
@@ -90,7 +92,54 @@ export default function SupportActivitiesPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+  const params = useParams();
+  const id = params.id;
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  const fetchActivities = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(
+          `${baseApiUrl}/api/participants/${id}/support-activities`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+
+      const json = await response.json();
+
+      if (json.success) {
+        const formatted = (json.data || []).map((item) => ({
+          id: item._id,
+          when: new Date(item.date).toLocaleString(),
+          where: item.location,
+          type: item.type,
+          practitioner: item.practitioner,
+          invoiceStatus: item.invoiceStatus,
+          dotColor: "#f9ca24",
+          notes: item.notes || "",
+        }));
+
+        setActivities(formatted);
+      }
+    } catch (error) {
+      console.error("Failed to fetch activities", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchActivities();
+}, [id]);
 
   return (
     <div className="h-screen bg-gray-50">
@@ -122,6 +171,11 @@ export default function SupportActivitiesPage() {
 
           {/* Table */}
           <div className="flex-1 p-8 bg-gray-50 overflow-auto">
+              {loading ? (
+              <div className="p-10 text-center text-gray-500">
+                Loading support activities...
+              </div>
+            ) : (
             <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
               <table className="w-full min-w-[1100px]">
                 <thead className="bg-gray-50 border-b sticky top-0 z-10">
@@ -158,9 +212,15 @@ export default function SupportActivitiesPage() {
                         {activity.practitioner}
                       </td>
                       <td className="py-5 px-6">
-                        <span className="bg-emerald-600 text-white text-xs px-4 py-1 rounded font-medium">
-                          Paid
-                        </span>
+                        <span
+                          className={`text-white text-xs px-4 py-1 rounded font-medium ${
+                            activity.invoiceStatus === "Paid"
+                              ? "bg-emerald-600"
+                              : "bg-gray-400"
+                          }`}
+                        >
+                        {activity.invoiceStatus}
+                      </span>
                       </td>
                       <td className="py-5 px-6 text-center">
                         <Menu
@@ -237,6 +297,7 @@ export default function SupportActivitiesPage() {
                 </tbody>
               </table>
             </div>
+            )}
 
             <div className="mt-6 text-sm text-gray-500 px-4">
               1-2 of 2 items
