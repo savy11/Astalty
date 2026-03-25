@@ -11,8 +11,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Tooltip } from 'react-tooltip';
-import { FaSort } from "react-icons/fa"; // For sort icons; npm install react-icons
 import Link from "next/link";
 import Header from "../components/header";
 
@@ -59,7 +57,6 @@ function ParticipantsPage() {
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
-
         const token = localStorage.getItem("token");
         console.log("API token:", token);
 
@@ -70,14 +67,11 @@ function ParticipantsPage() {
 
         const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-        const response = await fetch(
-        `${baseApiUrl}/api/participants/fetch`,
-          {
-        headers: {
+        const response = await fetch(`${baseApiUrl}/api/participants/fetch`, {
+          headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-        );
+        });
 
         const data = await response.json();
 
@@ -95,7 +89,7 @@ function ParticipantsPage() {
     fetchParticipants();
   }, []);
 
-   // 🔎 Search
+  // 🔎 Search
   // const filteredData = participants.filter((item) =>
   //   `${item.firstName} ${item.lastName}`
   //     .toLowerCase()
@@ -105,14 +99,15 @@ function ParticipantsPage() {
   // );
 
   const filteredData = Array.isArray(participants)
-  ? participants.filter((item) =>
-      `${item.firstName || ""} ${item.lastName || ""}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      item.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.email?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  : [];
+    ? participants.filter(
+        (item) =>
+          `${item.firstName || ""} ${item.lastName || ""}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          item.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.email?.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+    : [];
 
   // // Filter data by search
   // const filteredData = sampleData.filter(
@@ -153,21 +148,12 @@ function ParticipantsPage() {
     setCurrentPage(page);
   };
 
-  // Dynamic tooltip for sort button
-  const getSortTooltip = () => {
-    if (sortDir === 'asc') return 'Click to sort descending.';
-    if (sortDir === 'desc') return 'Click to sort ascending.';
-    return 'Click to sort ascending.';
-  };
-
   return (
     <div className="w-full">
       <Header activeKey="Participants" />
       <div className="p-4">
         <div className="flex mb-4 items-center">
-          <h1 className="text-2xl font-bold text-purple-500">
-            Participants
-          </h1>
+          <h1 className="text-2xl font-bold text-purple-500">Participants</h1>
           <Link
             href="/add-participant"
             className="ml-auto px-4 py-2 border border-gray-500 text-gray-500 rounded hover:bg-purple-500 hover:text-white transition ease-linear"
@@ -186,7 +172,6 @@ function ParticipantsPage() {
           />
         </div>
 
-        
         {/* Loading */}
         {loading ? (
           <div className="text-center py-10 text-gray-500">
@@ -225,7 +210,7 @@ function ParticipantsPage() {
                     <tr
                       key={item._id}
                       className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => window.location.href = `participants/1`}
+                      onClick={() => (window.location.href = `participants/1`)}
                     >
                       <td className="px-6 py-4 bg-gray-50 font-medium">
                         {item.firstName} {item.lastName}
@@ -239,9 +224,7 @@ function ParticipantsPage() {
                         {item.phoneNumber}
                       </td>
 
-                      <td className="px-6 py-4">
-                        {item.email}
-                      </td>
+                      <td className="px-6 py-4">{item.email}</td>
 
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
@@ -266,32 +249,23 @@ function ParticipantsPage() {
               <div className="flex justify-between items-center mt-6">
                 <div className="text-sm text-gray-600">
                   {startIndex + 1}-
-                  {Math.min(
-                    startIndex + itemsPerPage,
-                    totalItems
-                  )}{" "}
-                  of {totalItems}
+                  {Math.min(startIndex + itemsPerPage, totalItems)} of{" "}
+                  {totalItems}
                 </div>
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() =>
-                      handlePageChange(currentPage - 1)
-                    }
+                    onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className="px-3 py-1 border rounded disabled:opacity-50"
                   >
                     Previous
                   </button>
 
-                  <span className="px-3 py-1">
-                    {currentPage}
-                  </span>
+                  <span className="px-3 py-1">{currentPage}</span>
 
                   <button
-                    onClick={() =>
-                      handlePageChange(currentPage + 1)
-                    }
+                    onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className="px-3 py-1 border rounded disabled:opacity-50"
                   >
