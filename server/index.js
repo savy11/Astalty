@@ -42,22 +42,47 @@ mongoose.connect(MONGO_URL).then(()=> {
   })
 }).catch(err => console.log(err));
 
-/**
- * below is the users api
- */
+
 app.use("/api/user",userRoute)
 
-/**
- * below is the participant add api
- */
+
 app.use("/api/participant",participantRoute)
 app.use("/api/participants",participantRoute)
 
-/**
- * below is the dashboardMenusRoute api
- */
 app.use("/api",dashboardMenusRoute)
 
+const tagRoutes = require("./routes/tag-routes");
+app.use("/api",tagRoutes)
+
+
+const appointmentsRoutes = require("./routes/appointment-routes");
+app.use("/api",validateToken,appointmentsRoutes)
+
+
+const communicationRoutes = require("./routes/communication-routes");
+app.use("/api", communicationRoutes);
+
+
+const fileRoutes = require("./routes/file-routes");
+app.use("/api", fileRoutes);
+
+const progressNoteRoutes = require("./routes/progress-note-routes");
+app.use("/api", progressNoteRoutes);
+
+const caseRoutes = require("./routes/case-routes");
+app.use("/api", caseRoutes);
+
+const supportActivityRoutes = require("./routes/support-activity-routes");
+app.use("/api", supportActivityRoutes);
+
+const invoiceRoutes = require("./routes/invoice-routes");
+app.use("/api", invoiceRoutes);
+
+const paymentRoutes = require("./routes/payment-routes");
+app.use("/api", paymentRoutes);
+
+const practitionerAccessRoutes = require("./routes/practitioner-access-routes");
+app.use("/api", practitionerAccessRoutes);
 
 /**
  * below is the get about us list

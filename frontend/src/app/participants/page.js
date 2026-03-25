@@ -13,6 +13,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Header from "../components/header";
+import { useRouter } from "next/navigation";
 
 // const sampleData = [
 //   {
@@ -52,6 +53,7 @@ function ParticipantsPage() {
   const itemsPerPage = 10;
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // 🔥 Fetch real participants
   useEffect(() => {
@@ -210,7 +212,7 @@ function ParticipantsPage() {
                     <tr
                       key={item._id}
                       className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => (window.location.href = `participants/1`)}
+                      onClick={() => router.push(`/participants/${item._id}/details`)}
                     >
                       <td className="px-6 py-4 bg-gray-50 font-medium">
                         {item.firstName} {item.lastName}

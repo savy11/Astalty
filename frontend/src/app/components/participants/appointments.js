@@ -3,12 +3,14 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import { Plus, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Header from "../header";
 import ParticipantSidebar from "./sidebar";
 import ParticipantProfileHeader from "./profileHeader";
+import { useParams } from "next/navigation";
 
 /**
  * @typedef {Object} Appointment
@@ -120,11 +122,73 @@ const mockAppointments = [
 ];
 
 export default function ParticipantAppointmentsPage() {
-  const [appointments] = useState(mockAppointments);
+  // const [appointments] = useState(mockAppointments);
+
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+  // const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+
+const params = useParams();
+  const id = params.id;
+
+  console.log("Participant ID Grv:", id);
+
+ const formatDate = (date) => {
+  return new Date(date).toLocaleString("en-AU", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+};
+
+const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    
+  useEffect(() => {
+
+  if (!id) return;
+
+  const fetchAppointments = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${baseApiUrl}/api/participants/${id}/appointments`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      console.log("API result grv:", result);
+
+      setAppointments(result.data);   // ✅ important
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAppointments();
+
+}, [id]);
+
+if (loading) {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      Loading...
+    </div>
+  );
+}
 
   return (
     <div className="h-screen bg-gray-50">
@@ -190,7 +254,7 @@ export default function ParticipantAppointmentsPage() {
                             <div
                               className={`w-4 h-4 rounded-full ${app.statusColor || "bg-gray-400"}`}
                             />
-                            <span className="font-medium">{app.date}</span>
+                            <span className="font-medium">{formatDate(app.date)}</span>
                             {app.isCancelled && (
                               <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                                 Cancelled

@@ -4,14 +4,22 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+
 import Link from "next/link";
 import { Plus, Search, ChevronDown } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Header from "../header";
 import ParticipantSidebar from "./sidebar";
-import ParticipantProfileHeader from "./profileHeader";
+// import ParticipantProfileHeader from "./profileHeader";
+
+import dynamic from "next/dynamic";
+const ParticipantProfileHeader = dynamic(
+  () => import("./profileHeader"),
+  { ssr: false }
+);
 
 /**
  * @typedef {Object} Invoice
@@ -184,7 +192,9 @@ const mockInvoices = [
 ];
 
 export default function ParticipantInvoicesPage() {
-  const [invoices, setInvoices] = useState(mockInvoices);
+
+  const [invoices, setInvoices] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("desc");
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -196,7 +206,7 @@ export default function ParticipantInvoicesPage() {
     amount: "",
   });
 
-  const filteredInvoices = invoices.filter(
+  const filteredInvoices = (invoices || []).filter(
     (inv) =>
       inv.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       inv.to.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -244,7 +254,69 @@ export default function ParticipantInvoicesPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+  const params = useParams();
+  const id = params.id;  
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+  const fetchInvoices = async () => {
+    try {
+      setLoading(true);
+
+      console.log("API id", id);
+
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(
+        `${baseApiUrl}/api/participants/${id}/invoices`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const urlCheck = `${baseApiUrl}/api/participants/${id}/invoices`;
+
+
+      console.log("API urlCheck", urlCheck);
+
+      const json = await response.json();
+
+      console.log("API RESPONSE", json); // debug
+
+      if (json.success) {
+        const formatted = (json.data || []).map((item) => ({
+          id: item._id,
+          invoiceNumber: item.invoiceNumber,
+          to: item.participantName,
+          contact: item.organisation,
+          location: item.location,
+          practitioner: item.practitioner,
+          issueDate: new Date(item.issueDate).toLocaleDateString(),
+          dueDate: new Date(item.dueDate).toLocaleDateString(),
+          amount: item.amount,
+          outstanding: item.outstanding,
+          status: item.status,
+          sentStatus: item.sentStatus,
+          details: "",
+        }));
+
+        setInvoices(formatted);
+      } else {
+        setInvoices([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch invoices", error);
+      setInvoices([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchInvoices();
+}, [id]);
 
   return (
     <div className="h-screen bg-gray-50">
@@ -353,14 +425,18 @@ export default function ParticipantInvoicesPage() {
                         ${inv.outstanding}
                       </td>
                       <td className="py-5 px-6">
-                        <span className="bg-emerald-600 text-white text-xs px-4 py-1 rounded font-medium">
-                          Paid
+                        <span
+                          className={`text-white text-xs px-4 py-1 rounded font-medium ${
+                            inv.status === "Paid" ? "bg-emerald-600" : "bg-red-500"
+                          }`}
+                        >
+                          {inv.status}
                         </span>
                       </td>
                       <td className="py-5 px-6">
                         <span className="bg-emerald-400 text-white text-xs px-4 py-1 rounded font-medium">
-                          Delivered
-                        </span>
+                        {inv.sentStatus}
+                      </span>
                       </td>
                     </tr>
                   ))}
@@ -369,7 +445,7 @@ export default function ParticipantInvoicesPage() {
             </div>
 
             <div className="mt-6 text-sm text-gray-500 px-4">
-              1-10 of {invoices.length} items
+              1-{sortedInvoices.length} of {(invoices || []).length} items
             </div>
           </div>
         </div>

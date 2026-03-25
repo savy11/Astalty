@@ -14,6 +14,8 @@ import { Fragment } from "react";
 import Header from "../header";
 import ParticipantSidebar from "./sidebar";
 import ParticipantProfileHeader from "./profileHeader";
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 const mockCommunications = [
   {
@@ -88,11 +90,20 @@ export default function ParticipantCommunicationsPage() {
   const [expandedRows, setExpandedRows] = useState([""]); // first row open by default
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredData = mockCommunications.filter(
-    (row) =>
-      row.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.dateTime.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const [communications, setCommunications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // const filteredData = mockCommunications.filter(
+  //   (row) =>
+  //     row.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     row.dateTime.toLowerCase().includes(searchTerm.toLowerCase()),
+  // );
+
+  const filteredData = communications.filter(
+  (row) =>
+    row.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    row.date?.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   const itemsPerPage = 10;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -109,8 +120,56 @@ export default function ParticipantCommunicationsPage() {
 
     // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
 
+  const params = useParams();
+const id = params.id;
+
+  const formatDate = (date) => {
+  return new Date(date).toLocaleString("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+};
+
+  const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+useEffect(() => {
+  if (!id) return;
+
+  const fetchCommunications = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${baseApiUrl}/api/participants/${id}/communications`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      console.log("Communications API:", result);
+
+      setCommunications(result?.data || []);
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCommunications();
+}, [id]);
+
+if (loading) {
+  return <div className="p-10">Loading communications...</div>;
+}
 
   return (
     <div className="h-screen bg-gray-50">
@@ -178,15 +237,15 @@ export default function ParticipantCommunicationsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-sm">
                   {paginatedData.map((row) => (
-                    <Fragment key={row.id}>
+                    <Fragment key={row._id}>
                       {/* Main Row */}
                       <tr className="hover:bg-gray-50 group">
                         <td className="py-5 pl-6">
                           <button
-                            onClick={() => toggleRow(row.id)}
+                            onClick={() => toggleRow(row._id)}
                             className="text-gray-400 hover:text-emerald-600"
                           >
-                            {expandedRows.includes(row.id) ? (
+                            {expandedRows.includes(row._id) ? (
                               <ChevronDown className="w-5 h-5" />
                             ) : (
                               <ChevronRight className="w-5 h-5" />
@@ -263,7 +322,7 @@ export default function ParticipantCommunicationsPage() {
                       </tr>
 
                       {/* EXPANDED ROW */}
-                      {expandedRows.includes(row.id) && (
+                      {expandedRows.includes(row._id) && (
                         <tr>
                           <td colSpan={7} className="bg-gray-50 p-8 border-t">
                             <div className="grid grid-cols-12 gap-8">

@@ -4,7 +4,9 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useParams } from "next/navigation";
+
 import {
   Plus,
   Search,
@@ -160,7 +162,55 @@ export default function ProgressNotesPage() {
 
   // const router = useRouter();
   // const { id } = router.query; // Assuming participantId is the dynamic route param
-  const id = 1; // Hardcoded for demonstration; replace with dynamic param as needed
+
+  const params = useParams();
+  const id = params.id;
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  const fetchNotes = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const baseApiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const response = await fetch(
+          `${baseApiUrl}/api/participants/${id}/progress-notes`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+      const json = await response.json();
+
+      if (json.success) {
+        const formatted = json.data.map((item) => ({
+      id: item._id,
+      name: item.name,
+      status: item.status,
+      createdBy: item.createdBy,
+      serviceDate: new Date(item.serviceDate).toLocaleString(),
+      lastUpdate: new Date(item.lastUpdate).toLocaleString(),
+      createdAt: new Date(item.createdAt).toLocaleString(),
+      content: item.content || "",
+    }));
+
+        setNotes(formatted);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notes", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) {
+    fetchNotes();
+  }
+}, [id]);
 
   return (
     <div className="h-screen bg-gray-50">

@@ -123,6 +123,40 @@ const fetch = async (req, res) => {
   }
 };
 
+// FETCH PARTICIPANT BY ID
+const fetchById = async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const participant = await CreateParticipantModel.findById(id);
+
+    if (!participant) {
+      return res.status(404).json({
+        statusCode: 1004,
+        message: "Participant not found"
+      });
+    }
+
+    return res.status(200).json({
+      statusCode: 1000,
+      message: "Participant fetched successfully",
+      data: participant
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      statusCode: 1001,
+      message: "Participant fetch failed",
+      error: error.message
+    });
+
+  }
+
+};
+
 module.exports = {
-  create,fetch
+  create,fetch,fetchById
 };
