@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Edit, MoreHorizontal, HelpCircle } from "lucide-react";
+import { Edit, MoreHorizontal, HelpCircle } from "lucide-react";
 import Header from "../header";
 import ContactSidebar from "./sidebar";
 
