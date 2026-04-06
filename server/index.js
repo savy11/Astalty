@@ -44,8 +44,6 @@ mongoose.connect(MONGO_URL).then(()=> {
 
 
 app.use("/api/user",userRoute)
-
-
 app.use("/api/participant",participantRoute)
 app.use("/api/participants",participantRoute)
 
@@ -56,7 +54,7 @@ app.use("/api",tagRoutes)
 
 
 const appointmentsRoutes = require("./routes/appointment-routes");
-app.use("/api",validateToken,appointmentsRoutes)
+app.use("/api/appointments",validateToken,appointmentsRoutes)
 
 
 const communicationRoutes = require("./routes/communication-routes");
